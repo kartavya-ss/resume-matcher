@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from app.schemas import AnalyzeRequest
+from app.ml import compute_similarity
 
 app = FastAPI()
 
@@ -13,7 +14,7 @@ def health_check():
 
 @app.post("/analyze")
 def analyze(request: AnalyzeRequest):
+    score = compute_similarity(request.resume_text, request.job_description)
     return {
-        "received_resume_length": len(request.resume_text),
-        "received_job_description_length": len(request.job_description)
+        "match_score": round(score, 4)
     }
