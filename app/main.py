@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from app.schemas import AnalyzeRequest
-from app.ml import compute_similarity
+from app.ml import compute_similarity, get_skill_gap
 
 app = FastAPI()
 
@@ -15,6 +15,10 @@ def health_check():
 @app.post("/analyze")
 def analyze(request: AnalyzeRequest):
     score = compute_similarity(request.resume_text, request.job_description)
+    skill_gap = get_skill_gap(request.resume_text, request.job_description)
+
     return {
-        "match_score": round(score, 4)
+        "match_score": round(score, 4),
+        "matched_skills": skill_gap["matched_skills"],
+        "missing_skills": skill_gap["missing_skills"]
     }
