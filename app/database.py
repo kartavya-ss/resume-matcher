@@ -11,3 +11,5 @@ engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
+from app.models import Analysis
+Base.metadata.create_all(bind=engine)
