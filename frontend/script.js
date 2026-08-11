@@ -8,6 +8,13 @@ form.addEventListener("submit", async function (event) {
   const jobDescription = document.getElementById("job_description").value;
   const candidateName = document.getElementById("candidate_name").value;
 
+    
+    // Add this guardrail!
+    if (!candidateName.trim() || !resumeText.trim() || !jobDescription.trim()) {
+        resultsDiv.innerHTML = `<p style="color:red;">Error: Please fill out all fields before analyzing.</p>`;
+        return; // This stops the function from running the fetch() request
+    }
+
   resultsDiv.innerHTML = "Analyzing...";
 
 const response = await fetch("http://127.0.0.1:8000/analyze", {
