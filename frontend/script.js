@@ -1,0 +1,37 @@
+const form = document.getElementById("analyze-form");
+const resultsDiv = document.getElementById("results");
+
+form.addEventListener("submit", async function (event) {
+  event.preventDefault();
+
+  const resumeText = document.getElementById("resume_text").value;
+  const jobDescription = document.getElementById("job_description").value;
+  const candidateName = document.getElementById("candidate_name").value;
+
+  resultsDiv.innerHTML = "Analyzing...";
+
+const response = await fetch("http://127.0.0.1:8000/analyze", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    resume_text: resumeText,
+    job_description: jobDescription,
+    candidate_name: candidateName
+  })
+});
+
+const data = await response.json();
+
+if (!response.ok) {
+  resultsDiv.innerHTML = `<p style="color:red;">Error: ${JSON.stringify(data.detail)}</p>`;
+  return;
+}
+
+resultsDiv.innerHTML = `
+  <h3>Match Score: ${data.match_score}</h3>
+  <p><strong>Matched Skills:</strong> ${data.matched_skills.join(", ") || "None"}</p>
+  <p><strong>Missing Skills:</strong> ${data.missing_skills.join(", ") || "None"}</p>
+`;
+});

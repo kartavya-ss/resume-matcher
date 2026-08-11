@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Resume Matcher</title>
+</head>
+<body>
+  <h1>Resume Matcher</h1>
+  <label for="candidate_name">Candidate Name</label><br>
+<input type="text" id="candidate_name"><br><br>
+
+  <form id="analyze-form">
+    <label for="resume_text">Resume Text</label><br>
+    <textarea id="resume_text" rows="6" cols="50"></textarea><br><br>
+
+    <label for="job_description">Job Description</label><br>
+    <textarea id="job_description" rows="6" cols="50"></textarea><br><br>
+
+    <button type="submit">Analyze</button>
+  </form>
+
+  <div id="results"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
