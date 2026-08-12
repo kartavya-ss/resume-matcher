@@ -1,4 +1,4 @@
-from fastapi import FastAPI, UploadFile, File, Form, Depends
+from fastapi import FastAPI, UploadFile, File, Form, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.schemas import AnalyzeRequest
 from app.ml import compute_similarity, get_skill_gap
@@ -62,15 +62,21 @@ def analyze(request: AnalyzeRequest, db: Session = Depends(get_db)):
 async def analyze_pdf(
     job_description: str = Form(...),
     resume_file: UploadFile = File(...),
-    db: Session = Depends(get_db) # <-- Added the database dependency
+    db: Session = Depends(get_db)
 ):
     file_bytes = await resume_file.read()
-    resume_text = extract_text_from_pdf(file_bytes)
-    
+
+    try:
+        resume_text = extract_text_from_pdf(file_bytes)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+    if not resume_text.strip():
+        raise HTTPException(status_code=400, detail="No readable text found in the PDF. It may be a scanned/image-only document.")
+
     score = compute_similarity(resume_text, job_description)
     skill_gap = get_skill_gap(resume_text, job_description)
-    
-    # <-- ADDED DATABASE SAVING LOGIC HERE -->
+
     record = Analysis(
         match_score=round(score, 4),
         matched_skills=",".join(skill_gap["matched_skills"]),
@@ -79,13 +85,12 @@ async def analyze_pdf(
     db.add(record)
     db.commit()
     db.refresh(record)
-    
+
     return {
-        "id": record.id, # Returns the new database ID
-        "match_score": round(score, 4),
+        "id": record.id,
+        "match_score": record.match_score,
         "matched_skills": skill_gap["matched_skills"],
-        "missing_skills": skill_gap["missing_skills"],
-        "extracted_text_preview": resume_text[:200]
+        "missing_skills": skill_gap["missing_skills"]
     }
 
 # --- 3. HISTORY ROUTE (Fetches from DB) ---

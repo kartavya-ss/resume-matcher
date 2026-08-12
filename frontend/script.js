@@ -67,3 +67,4 @@ async function loadHistory() {
 }
 
 document.addEventListener("DOMContentLoaded", loadHistory);
+document.getElementById("refresh-button").addEventListener("click", loadHistory);
