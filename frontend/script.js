@@ -41,4 +41,29 @@ resultsDiv.innerHTML = `
   <p><strong>Matched Skills:</strong> ${data.matched_skills.join(", ") || "None"}</p>
   <p><strong>Missing Skills:</strong> ${data.missing_skills.join(", ") || "None"}</p>
 `;
+loadHistory();
 });
+
+async function loadHistory() {
+  const historyDiv = document.getElementById("history");
+  historyDiv.innerHTML = "Loading history...";
+
+  const response = await fetch("http://127.0.0.1:8000/history");
+  const data = await response.json();
+
+  if (!response.ok || data.length === 0) {
+    historyDiv.innerHTML = "<p>No past analyses yet.</p>";
+    return;
+  }
+
+  historyDiv.innerHTML = data.map(item => `
+    <div class="history-card">
+      <p><strong>Score:</strong> ${item.match_score}</p>
+      <p><strong>Matched:</strong> ${item.matched_skills.join(", ") || "None"}</p>
+      <p><strong>Missing:</strong> ${item.missing_skills.join(", ") || "None"}</p>
+      <p class="timestamp">${new Date(item.created_at).toLocaleString()}</p>
+    </div>
+  `).join("");
+}
+
+document.addEventListener("DOMContentLoaded", loadHistory);
