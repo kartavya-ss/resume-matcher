@@ -1,3 +1,11 @@
+import os
+import torch
+
+# Tell PyTorch to use a single CPU thread to keep RAM low
+torch.set_num_threads(1)
+os.environ["OMP_NUM_THREADS"] = "1"
+os.environ["MKL_NUM_THREADS"] = "1"
+
 from sentence_transformers import SentenceTransformer, util
 
 model = SentenceTransformer("all-MiniLM-L6-v2")
