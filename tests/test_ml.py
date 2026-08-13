@@ -1,9 +1,4 @@
 import sys
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-
-from app.ml import compute_similarity, extract_skills, get_skill_gap
-
-import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
@@ -42,4 +37,16 @@ def test_get_skill_gap_matched_and_missing():
     )
     assert "python" in result["matched_skills"]
     assert "docker" in result["matched_skills"]
+    assert "aws" in result["missing_skills"]
+
+def test_get_skill_gap_no_overlap():
+    result = get_skill_gap(
+        resume_text="I enjoy cooking, playing music, and traveling.",
+        job_description="We are looking for Python, Docker, and AWS experience."
+    )
+    # Check that zero skills were matched
+    assert len(result["matched_skills"]) == 0
+    # Check that all skills required by the job are listed as missing
+    assert "python" in result["missing_skills"]
+    assert "docker" in result["missing_skills"]
     assert "aws" in result["missing_skills"]
