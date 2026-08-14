@@ -1,16 +1,22 @@
 import os
 import torch
 
-# Tell PyTorch to use a single CPU thread to keep RAM low
 torch.set_num_threads(1)
 os.environ["OMP_NUM_THREADS"] = "1"
 os.environ["MKL_NUM_THREADS"] = "1"
 
 from sentence_transformers import SentenceTransformer, util
 
-model = SentenceTransformer("all-MiniLM-L6-v2")
+_model = None
+
+def get_model():
+    global _model
+    if _model is None:
+        _model = SentenceTransformer("all-MiniLM-L6-v2")
+    return _model
 
 def compute_similarity(resume_text: str, job_description: str) -> float:
+    model = get_model()
     resume_embedding = model.encode(resume_text, convert_to_tensor=True)
     job_embedding = model.encode(job_description, convert_to_tensor=True)
 

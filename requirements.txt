@@ -1,32 +1,16 @@
 --extra-index-url https://download.pytorch.org/whl/cpu
---extra-index-url https://download.pytorch.org/whl/cpu
-# CPU PyTorch wheels are hosted on PyTorch's extra index. Render will use this
-# when installing from requirements.txt.
-# Pin the exact CPU wheel compatible with many modern Python versions/architectures.
-torch==2.13.0+cpu
+torch==2.3.0+cpu
 
-# Web
 fastapi
 uvicorn[standard]
-gunicorn
 
-# Database
 sqlalchemy
 psycopg2-binary
 
-# Environment and form handling
 python-dotenv
 python-multipart
 
-# PDF parsing and validation
 pypdf
-
-# ML / embeddings
 sentence-transformers
-transformers
-huggingface-hub
 
-# Data validation
 pydantic
-
-# Optional: pin any other libs your app uses
