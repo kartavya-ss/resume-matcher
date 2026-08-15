@@ -1,3 +1,5 @@
+const API_BASE_URL = "https://resume-matcher-api-fr74.onrender.com";
+
 const form = document.getElementById("analyze-form");
 const resultsDiv = document.getElementById("results");
 
@@ -17,7 +19,7 @@ form.addEventListener("submit", async function (event) {
 
   resultsDiv.innerHTML = "Analyzing...";
 
-const response = await fetch("http://127.0.0.1:8000/analyze", {
+const response = await fetch(`${API_BASE_URL}/analyze`, {
   method: "POST",
   headers: {
     "Content-Type": "application/json"
@@ -48,7 +50,7 @@ async function loadHistory() {
   const historyDiv = document.getElementById("history");
   historyDiv.innerHTML = "Loading history...";
 
-  const response = await fetch("http://127.0.0.1:8000/history");
+const response = await fetch(`${API_BASE_URL}/history`);
   const data = await response.json();
 
   if (!response.ok || data.length === 0) {
